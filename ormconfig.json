@@ -5,8 +5,8 @@
   "username": "ndimz",
   "password": "ndimz@postgres",
   "database": "keurderet",
-  "entities": ["dist/entities/*.js"],
-  "migrations": ["dist/migrations/*.js"],
+  "entities": ["src/entities/*.ts"],
+  "migrations": ["src/migrations/*.ts"],
   "logging": true,
   "synchronize": true
 }

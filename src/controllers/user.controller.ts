@@ -6,7 +6,7 @@ import { User } from "../entities/User";
 export const register = async (req: Request, res: Response) => {
   const userRepository = getRepository(User);
 
-  if (Object.keys(req.body).length < 1 || Object.keys(req.body).length > 7) {
+  if (Object.keys(req.body).length < 1) {
     return res.status(403).json({
       message: "Illegal data passed",
     });
@@ -14,6 +14,18 @@ export const register = async (req: Request, res: Response) => {
 
   if (Object.keys(req.body).length === 1) {
     try {
+      const userStatus = await userRepository.findOne({
+        where: {
+          phone: req.body.phone,
+        },
+      });
+
+      if (userStatus) {
+        return res.status(200).json({
+          message: "Phone number already exists",
+        });
+      }
+
       const user = userRepository.create({
         firstName: "",
         lastName: "",
@@ -22,7 +34,7 @@ export const register = async (req: Request, res: Response) => {
         activeDonor: false,
         address: "",
         location: "",
-        phone: 0,
+        phone: req.body.phone,
         verified: false,
       });
       const results = await userRepository.save(user);
@@ -30,12 +42,19 @@ export const register = async (req: Request, res: Response) => {
     } catch (err) {
       console.error(err);
       return res.status(500).json({
-        error: "Server error",
+        error: "Server error 1",
       });
     }
   } else {
     try {
-      const user = await userRepository.findOne(req.body.phone);
+      const user = await userRepository.findOne({
+        where: {
+          phone: req.body.phone,
+          verified: true,
+        },
+      });
+
+      console.log(user);
       if (user) {
         userRepository.merge(user, {
           firstName: req.body.firstName,
@@ -45,12 +64,14 @@ export const register = async (req: Request, res: Response) => {
           activeDonor: req.body.activeDonor,
           address: req.body.address,
           location: req.body.location,
-          phone: parseInt(req.body.phone),
           verified: true,
         });
-
         const results = await userRepository.save(user);
         console.log(results);
+      } else {
+        return res.status(401).json({
+          error: "User phone number not verified",
+        });
       }
     } catch (err) {}
   }
@@ -60,10 +81,28 @@ export const register = async (req: Request, res: Response) => {
   });
 };
 
-export const get = (req: Request, res: Response) => {
-  res.status(200).json({
-    message: {
-      name: "John Doe",
+export const get = async (req: Request, res: Response) => {
+  const userRepository = getRepository(User);
+
+  if (!req.params.phone) {
+    return res.status(500).json({
+      error: "You must pass phone number",
+    });
+  }
+  const user = await userRepository.findOne({
+    where: {
+      phone: parseInt(req.params.phone),
     },
+  });
+
+  if (user) {
+    return res.status(200).json({
+      message: {
+        user,
+      },
+    });
+  }
+  res.status(404).json({
+    message: "No user found",
   });
 };

@@ -6,7 +6,7 @@ import { createConnection } from "typeorm";
 import UserRouter from "./routes/user";
 
 const main = async () => {
-  const conn = await createConnection();
+  await createConnection();
 
   const app: Application = express();
 
