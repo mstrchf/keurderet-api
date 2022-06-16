@@ -1,0 +1,12 @@
+{
+  "type": "postgres",
+  "host": "localhost",
+  "port": 5432,
+  "username": "ndimz",
+  "password": "ndimz@postgres",
+  "database": "keurderet",
+  "entities": ["dist/entities/*.js"],
+  "migrations": ["dist/migrations/*.js"],
+  "logging": true,
+  "synchronize": true
+}
