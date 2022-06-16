@@ -1,14 +1,23 @@
+import "reflect-metadata";
+import "dotenv-safe/config";
 import express, { Application } from "express";
+import { createConnection } from "typeorm";
+
 import UserRouter from "./routes/user";
 
-const app: Application = express();
-const PORT: number = 5000 || process.env.PORT;
+const main = async () => {
+  const conn = await createConnection();
 
-app.use(express.json());
-app.use("/users", UserRouter);
+  const app: Application = express();
 
-app.listen(PORT, (): void => {
-  console.log(`Server running on port ${PORT}`);
+  app.use(express.json());
+  app.use("/user", UserRouter);
+
+  app.listen(5000, (): void => {
+    console.log(`Server running on port ${process.env.PORT}`);
+  });
+};
+
+main().catch((err) => {
+  console.error(err);
 });
-
-export default app;

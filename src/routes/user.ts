@@ -1,10 +1,9 @@
-import { Request, Response, Router } from "express";
+import { Router } from "express";
 const router = Router();
 
-router.get("/", (req: Request, res: Response) => {
-  return res.status(200).json({
-    message: "Welcome home, Toby",
-  });
-});
+import { register, get } from "../controllers/user.controller";
+
+router.get("/", get);
+router.post("/register", register);
 
 export default router;
