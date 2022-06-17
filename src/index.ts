@@ -14,7 +14,7 @@ const main = async () => {
   app.use("/user", UserRouter);
 
   app.listen(5000, (): void => {
-    console.log(`Server running on port ${process.env.PORT}`);
+    console.log(`Server running on port 5000`);
   });
 };
 
