@@ -106,3 +106,22 @@ export const get = async (req: Request, res: Response) => {
     message: "No user found",
   });
 };
+
+export const verifyPhone = async (req: Request, res: Response) => {
+	const pincode = req.body.code;
+	const userRepository = getRepository(User);
+
+	const user = userRepository.findOne({
+		where:{
+			phone: parseInt(pincode)
+		},
+	})
+
+	res.status(200).json({
+		message: "Phone number successfully verified"
+	})
+
+	res.status(401).json({
+		error: "Phone verification error"
+	})
+}
