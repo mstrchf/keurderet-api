@@ -38,6 +38,9 @@ export class User extends BaseEntity {
 
   @Column()
   verified: boolean;
+  
+  @Column()
+  code: number;
 
   @CreateDateColumn()
   createdAt: Date;

@@ -2,9 +2,11 @@ import { Request, Response } from "express";
 import { getRepository } from "typeorm";
 import Joi from "joi";
 
+import { generateToken } from "../utils/jwt.utils";
 import { User } from "../entities/User";
 
 export const register = async (req: Request, res: Response) => {
+  let token = "";
   const schema = Joi.object({
     firstName: Joi.string().alphanum().min(3).max(10).required(),
     lastName: Joi.string().alphanum().min(3).max(10).required(),
@@ -41,7 +43,9 @@ export const register = async (req: Request, res: Response) => {
           verified: true,
         });
         const results = await userRepository.save(user);
-        console.log(results);
+
+        // Generate user token
+        token = generateToken(user);
       } else {
         return res.status(401).json({
           error: "User phone number not verified",
@@ -56,6 +60,7 @@ export const register = async (req: Request, res: Response) => {
 
   return res.status(201).json({
     message: "User created",
+    token,
   });
 };
 
@@ -121,7 +126,8 @@ export const registerPhone = async (req: Request, res: Response) => {
           message: "Phone number already exists",
         });
       }
-
+      const code = Math.floor(Math.random() * 999999);
+      console.log(code);
       const user = userRepository.create({
         firstName: "",
         lastName: "",
@@ -132,6 +138,7 @@ export const registerPhone = async (req: Request, res: Response) => {
         location: "",
         phone: req.body.phone,
         verified: false,
+        code: code,
       });
       const results = await userRepository.save(user);
       console.log(results);
@@ -146,6 +153,11 @@ export const registerPhone = async (req: Request, res: Response) => {
       error: err,
     });
   }
+
+  res.status(201).json({
+    message:
+      "Phone registered. A verification code has been sent to your number",
+  });
 };
 
 export const verifyPhone = async (req: Request, res: Response) => {
@@ -158,22 +170,24 @@ export const verifyPhone = async (req: Request, res: Response) => {
     const pincode = req.body.code;
     const userRepository = getRepository(User);
 
-    const user = userRepository.findOne({
+    const user = await userRepository.findOne({
       where: {
-        phone: parseInt(pincode),
+        code: parseInt(pincode),
       },
     });
-
-    res.status(200).json({
-      message: "Phone number successfully verified",
-    });
+    if (user) {
+      userRepository.merge(user, {
+        verified: true,
+      });
+      const results = await userRepository.save(user);
+    }else
+          throw new Error("Invalid code")
   } catch (err) {
     return res.status(422).json({
       error: err,
     });
   }
-
-  res.status(401).json({
-    error: "Phone verification error",
+  res.status(200).json({
+    message: "Phone number successfully verified",
   });
 };
