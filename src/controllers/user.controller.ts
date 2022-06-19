@@ -27,6 +27,7 @@ export const register = async (req: Request, res: Response) => {
         where: {
           phone: req.body.phone,
           verified: true,
+          register_complete: false,
         },
       });
 
@@ -41,6 +42,7 @@ export const register = async (req: Request, res: Response) => {
           address: req.body.address,
           location: req.body.location,
           verified: true,
+          register_complete: true,
         });
         const results = await userRepository.save(user);
 
@@ -139,6 +141,7 @@ export const registerPhone = async (req: Request, res: Response) => {
         phone: req.body.phone,
         verified: false,
         code: code,
+        register_complete: false,
       });
       const results = await userRepository.save(user);
       console.log(results);
@@ -180,8 +183,7 @@ export const verifyPhone = async (req: Request, res: Response) => {
         verified: true,
       });
       const results = await userRepository.save(user);
-    }else
-          throw new Error("Invalid code")
+    } else throw new Error("Invalid code");
   } catch (err) {
     return res.status(422).json({
       error: err,

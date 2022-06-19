@@ -42,6 +42,9 @@ export class User extends BaseEntity {
   @Column()
   code: number;
 
+  @Column()
+  register_complete: boolean;
+
   @CreateDateColumn()
   createdAt: Date;
 
