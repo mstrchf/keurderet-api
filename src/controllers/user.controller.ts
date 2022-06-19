@@ -7,46 +7,12 @@ export const register = async (req: Request, res: Response) => {
   const userRepository = getRepository(User);
 
   if (Object.keys(req.body).length < 1) {
-    return res.status(403).json({
-      message: "Illegal data passed",
+    return res.status(422).json({
+      message: "Some data fields are missing",
     });
   }
 
-  if (Object.keys(req.body).length === 1) {
-    try {
-      const userStatus = await userRepository.findOne({
-        where: {
-          phone: req.body.phone,
-        },
-      });
-
-      if (userStatus) {
-        return res.status(200).json({
-          message: "Phone number already exists",
-        });
-      }
-
-      const user = userRepository.create({
-        firstName: "",
-        lastName: "",
-        age: 0,
-        bloodGroup: "",
-        activeDonor: false,
-        address: "",
-        location: "",
-        phone: req.body.phone,
-        verified: false,
-      });
-      const results = await userRepository.save(user);
-      console.log(results);
-    } catch (err) {
-      console.error(err);
-      return res.status(500).json({
-        error: "Server error 1",
-      });
-    }
-  } else {
-    try {
+  try {
       const user = await userRepository.findOne({
         where: {
           phone: req.body.phone,
@@ -74,14 +40,13 @@ export const register = async (req: Request, res: Response) => {
         });
       }
     } catch (err) {}
-  }
 
   return res.status(201).json({
     message: "User created",
   });
 };
 
-export const get = async (req: Request, res: Response) => {
+export const getUser = async (req: Request, res: Response) => {
   const userRepository = getRepository(User);
 
   if (!req.params.phone) {
@@ -106,6 +71,47 @@ export const get = async (req: Request, res: Response) => {
     message: "No user found",
   });
 };
+
+export const registerPhone = async (req:Request, res: Response) => {
+    const userRepository = getRepository(User);
+    if(!req.body.phone){
+        return res.status(422).json({
+            error:"You have to pass phone number"
+        })
+    }
+        try {
+            const userStatus = await userRepository.findOne({
+                where: {
+                    phone: req.body.phone,
+                },
+            });
+
+            if (userStatus) {
+                return res.status(200).json({
+                    message: "Phone number already exists",
+                });
+            }
+
+            const user = userRepository.create({
+                firstName: "",
+                lastName: "",
+                age: 0,
+                bloodGroup: "",
+                activeDonor: false,
+                address: "",
+                location: "",
+                phone: req.body.phone,
+                verified: false,
+            });
+            const results = await userRepository.save(user);
+            console.log(results);
+        } catch (err) {
+            console.error(err);
+            return res.status(500).json({
+                error: "Server error 1",
+            });
+        }
+}
 
 export const verifyPhone = async (req: Request, res: Response) => {
 	const pincode = req.body.code;
