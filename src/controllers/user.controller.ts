@@ -50,7 +50,7 @@ export const register = async (req: Request, res: Response) => {
         token = generateToken(user);
       } else {
         return res.status(401).json({
-          error: "User phone number not verified",
+          error: "Cannot register user. User already exists or phone not verified",
         });
       }
     } catch (err) {}
