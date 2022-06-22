@@ -5,7 +5,11 @@ import {
   CreateDateColumn,
   DeleteDateColumn,
   BaseEntity,
+  OneToMany,
 } from "typeorm";
+
+import { Notification } from "./Notification";
+import { Request } from "./Request";
 
 @Entity()
 export class User extends BaseEntity {
@@ -36,9 +40,15 @@ export class User extends BaseEntity {
   @Column()
   phone: number;
 
+  @OneToMany(() => Notification, (notifications) => notifications.creator)
+  notifications: Notification[];
+
+  @OneToMany(() => Request, (requests) => requests.creator)
+  requests: Request[];
+
   @Column()
   verified: boolean;
-  
+
   @Column()
   code: number;
 
