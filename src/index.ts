@@ -1,5 +1,6 @@
 import "reflect-metadata";
 import "dotenv-safe/config";
+import 'dotenv/config'
 import express, { Application } from "express";
 import { createConnection } from "typeorm";
 
@@ -13,8 +14,8 @@ const main = async () => {
   app.use(express.json());
   app.use("/user", UserRouter);
 
-  app.listen(5000, (): void => {
-    console.log(`Server running on port 5000`);
+  app.listen(process.env.PORT, (): void => {
+    console.log(`Server running on port ${process.env.PORT}`);
   });
 };
 
