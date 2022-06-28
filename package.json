@@ -6,7 +6,7 @@
   "author": "Alieu Ndimbalane <alieundimbalane@gmail.com>",
   "license": "MIT",
   "scripts": {
-    "start": "nodemon --watch './**/*.ts' --exec 'node --experimental-specifier-resolution=node --loader ts-node/esm' src/index.ts",
+    "start": "nodemon --watch './**/*.ts' --exec 'node  --loader ts-node/esm' src/index.ts",
     "test": "jest",
     "lint": "eslint",
     "all": "yarn eslint && yarn jest && yarn start",
