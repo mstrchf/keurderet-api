@@ -29,7 +29,7 @@
     "eslint-config-airbnb-typescript": "^17.0.0",
     "eslint-plugin-import": "^2.26.0",
     "jest": "^28.1.0",
-    "nodemon": "^2.0.16",
+    "nodemon": "^2.0.18",
     "pre-commit": "^1.2.2",
     "prettier": "^2.7.1",
     "supertest": "^6.2.3",
